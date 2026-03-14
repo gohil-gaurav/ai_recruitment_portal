@@ -11,6 +11,14 @@ export default function CandidateProfileModal({ candidate, isOpen, onClose }) {
     { name: "Twitter", url: candidate.twitter, icon: "twitter" },
   ];
 
+
+
+
+
+
+
+
+  // /thihahodfnd
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4 animate-fade-in">
       <div className="relative bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
