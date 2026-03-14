@@ -15,6 +15,8 @@ export async function POST(req) {
     return NextResponse.json({ reply: "Please provide a search query.", candidates: [] }, { status: 200 });
   }
 
+  // #dfghjkl
+
   try {
     const candidates = await prisma.candidate.findMany({
       where: {

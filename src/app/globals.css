@@ -21,19 +21,19 @@
 
 html {
   scroll-behavior: smooth;
-  min-height: 100%;
+  scroll-padding-top: 80px;
 }
 
 body {
-  margin: 0;
-  padding: 0;
   background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.05), transparent 30%),
     radial-gradient(circle at 80% 0%, rgba(198, 243, 107, 0.08), transparent 25%),
     linear-gradient(135deg, #0b0b0f, #0f0f12);
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
   min-height: 100vh;
-  min-height: 100dvh;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .magic-grid {
@@ -44,6 +44,19 @@ body {
   background-size: 32px 32px;
   mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 0.8), transparent 70%);
   pointer-events: none;
+}
+
+.animated-grid {
+  animation: grid-move 20s linear infinite;
+}
+
+@keyframes grid-move {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 32px 32px;
+  }
 }
 
 .aceternity-spotlight {
@@ -60,32 +73,45 @@ body {
   border: 1px solid rgba(198, 243, 107, 0.6);
   box-shadow: 0 0 0 1px rgba(198, 243, 107, 0.08), 0 15px 60px rgba(0, 0, 0, 0.35),
     inset 0 0 20px rgba(198, 243, 107, 0.05);
+  position: relative;
+}
+
+.neon-border::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(198, 243, 107, 0.3), transparent, rgba(198, 243, 107, 0.1));
+  filter: blur(8px);
+  opacity: 0.3;
+  z-index: -1;
+  pointer-events: none;
 }
 
 .glass-card {
   background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 20px 80px rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(12px);
+  position: relative;
+}
+
+.glass-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.5;
 }
 
 .glow-outline {
   position: relative;
-}
-
-.sheen-card {
-  position: relative;
-  overflow: hidden;
-}
-
-.sheen-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.06), transparent);
-  transform: translateX(-120%);
-  animation: sheen-sweep 5.5s ease-in-out infinite;
-  pointer-events: none;
 }
 
 .glow-outline::after {
@@ -104,24 +130,62 @@ body {
 }
 
 .hover-tilt {
-  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .hover-tilt:hover {
-  transform: translateY(-6px) rotateX(2deg) rotateY(-2deg);
+  transform: translateY(-6px);
   box-shadow: 0 20px 80px rgba(0, 0, 0, 0.35);
 }
 
-.floating {
-  animation: float 5s ease-in-out infinite;
+/* Floating card animation */
+.floating-card {
+  animation: float-smooth 4s ease-in-out infinite;
 }
 
-@keyframes float {
+@keyframes float-smooth {
   0%, 100% {
     transform: translateY(0px);
   }
   50% {
-    transform: translateY(-10px);
+    transform: translateY(-6px);
+  }
+}
+
+/* Button animations */
+.animated-button {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.animated-button:hover {
+  transform: scale(1.03);
+}
+
+.animated-button.bg-\[var\(--accent\)\]:hover {
+  box-shadow: 0 0 20px rgba(198, 243, 107, 0.4), 0 0 40px rgba(198, 243, 107, 0.2);
+}
+
+/* Card animations */
+.animated-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.animated-card:hover {
+  border-color: rgba(198, 243, 107, 0.3);
+  box-shadow: 0 0 30px rgba(198, 243, 107, 0.1), 0 20px 80px rgba(0, 0, 0, 0.45);
+}
+
+/* Telepathic glow animation */
+.telepathic-glow {
+  animation: telepathic-pulse 3s ease-in-out infinite;
+}
+
+@keyframes telepathic-pulse {
+  0%, 100% {
+    text-shadow: 0 0 10px rgba(198, 243, 107, 0.3);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(198, 243, 107, 0.6), 0 0 30px rgba(198, 243, 107, 0.4);
   }
 }
 
@@ -131,18 +195,6 @@ body {
   }
   100% {
     transform: translateX(100%);
-  }
-}
-
-@keyframes sheen-sweep {
-  0% {
-    transform: translateX(-120%);
-  }
-  55% {
-    transform: translateX(120%);
-  }
-  100% {
-    transform: translateX(120%);
   }
 }
 
@@ -164,6 +216,7 @@ body {
   padding: 6px 12px;
   font-weight: 600;
   letter-spacing: 0.02em;
+  display: inline-block;
 }
 
 .mono-label {
@@ -182,7 +235,7 @@ body {
 
 /* Scrollbar styling */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
@@ -190,10 +243,69 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2a2a30;
-  border-radius: 4px;
+  background: linear-gradient(180deg, #2a2a30, #1a1a20);
+  border-radius: 5px;
+  border: 2px solid #0f0f12;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #3a3a41;
+  background: linear-gradient(180deg, #3a3a41, #2a2a30);
+}
+
+/* Selection styling */
+::selection {
+  background: rgba(198, 243, 107, 0.3);
+  color: #ffffff;
+}
+
+::-moz-selection {
+  background: rgba(198, 243, 107, 0.3);
+  color: #ffffff;
+}
+
+/* Smooth transitions for all interactive elements */
+a, button {
+  transition: all 0.2s ease;
+}
+
+/* Focus styles for accessibility */
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Pulse animation for live indicators */
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+.animate-pulse {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+  .hover-tilt:hover {
+    transform: translateY(-3px);
+  }
+  
+  .floating-card {
+    animation: float-smooth-mobile 4s ease-in-out infinite;
+  }
+  
+  @keyframes float-smooth-mobile {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-3px);
+    }
+  }
 }
