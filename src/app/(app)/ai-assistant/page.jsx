@@ -2,12 +2,29 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  Sparkles, 
+  Send, 
+  Bot, 
+  User, 
+  Loader2,
+  TrendingUp,
+  Users,
+  ArrowLeft,
+  CheckCircle2
+} from "lucide-react";
+
+const fadeIn = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 }
+};
 
 export default function AiAssistantPage() {
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      content: "Tell me what you need. Example: “Find Python developers with 3 years experience in NYC.”",
+      content: "Hello! I'm your AI recruiting assistant. Tell me what you're looking for. For example: \"Find Python developers with 3+ years experience in NYC\"",
     },
   ]);
   const [input, setInput] = useState("");
@@ -31,7 +48,7 @@ export default function AiAssistantPage() {
         topSkills.set(s, (topSkills.get(s) || 0) + 1);
       }
     }
-    const skills = [...topSkills.entries()].sort((a, b) => b[1] - a[1]).slice(0, 4).map(([s]) => s);
+    const skills = [...topSkills.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5).map(([s]) => s);
     return { count, skills };
   }, [candidates]);
 
@@ -52,118 +69,225 @@ export default function AiAssistantPage() {
       if (data.candidates) setCandidates(data.candidates);
       setMessages((m) => [
         ...m,
-        { role: "assistant", content: data.reply || "Here are the matches I found." },
+        { role: "assistant", content: data.reply || "Here are the matching candidates I found for you." },
       ]);
     } catch (err) {
-      setMessages((m) => [...m, { role: "assistant", content: "I hit an issue fetching results." }]);
+      setMessages((m) => [...m, { role: "assistant", content: "I encountered an issue while searching. Please try again." }]);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+    <div className="space-y-8">
+      {/* Header */}
+      <motion.div 
+        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+        initial="hidden"
+        animate="visible"
+        variants={fadeIn}
+        transition={{ duration: 0.5 }}
+      >
         <div>
-          <p className="mono-label">AI Assistant</p>
-          <h1 className="mt-1 text-2xl sm:text-3xl font-semibold">Natural language candidate search</h1>
-          <p className="mt-1 text-sm text-gray-400">
-            Describe intent. We convert it into a database query and return candidate matches.
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--accent)]/10 border border-[var(--accent)]/30 mb-3">
+            <Sparkles className="w-3.5 h-3.5 text-[var(--accent)]" />
+            <span className="text-xs text-[var(--accent)] font-semibold uppercase tracking-wider">AI Assistant</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-black">Natural Language Search</h1>
+          <p className="mt-2 text-base text-gray-400">
+            Describe what you need in plain English. AI will find matching candidates instantly.
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Link
-            href="/dashboard"
-            className="pill bg-white/10 border border-white/15 text-white hover:border-(--accent) hover:scale-105 transition"
-          >
-            Back to Dashboard
-          </Link>
-        </div>
-      </div>
+        <Link
+          href="/dashboard"
+          className="rounded-full border-2 border-white/20 text-white hover:border-white/40 transition-all px-6 py-3 inline-flex items-center justify-center gap-2 font-semibold hover:bg-white/5"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Back to Dashboard</span>
+        </Link>
+      </motion.div>
 
-      <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-6 items-start">
-        <section className="glass-card rounded-2xl p-5 flex flex-col min-h-[70vh]">
-          <div className="flex items-center justify-between mb-4 gap-3">
-            <div>
-              <p className="mono-label">Chat</p>
-              <p className="text-sm text-gray-300">Prompt the recruiter assistant.</p>
+      <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 items-start">
+        {/* Chat Section */}
+        <motion.section 
+          className="glass-card rounded-3xl p-8 flex flex-col"
+          initial="hidden"
+          animate="visible"
+          variants={fadeIn}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          style={{ height: "calc(100vh - 280px)", minHeight: "600px" }}
+        >
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--accent)]/20 to-[var(--accent)]/5 border border-[var(--accent)]/30 flex items-center justify-center">
+              <Bot className="w-6 h-6 text-[var(--accent)]" />
             </div>
-            {loading && <span className="text-xs text-gray-400">Thinking...</span>}
-          </div>
-          <div ref={chatScrollRef} className="flex-1 overflow-y-auto space-y-3 pr-1">
-            {messages.map((m, idx) => (
-              <div
-                key={idx}
-                className={`rounded-xl p-3 border border-white/10 ${
-                  m.role === "assistant" ? "bg-white/5" : "bg-(--accent) text-black"
-                }`}
-              >
-                <p className="text-xs uppercase tracking-[0.08em] mb-1">{m.role}</p>
-                <p className="text-sm leading-relaxed">{m.content}</p>
+            <div className="flex-1">
+              <h2 className="text-lg font-bold">AI Chat</h2>
+              <p className="text-xs text-gray-400">Ask me anything about candidates</p>
+            </div>
+            {loading && (
+              <div className="flex items-center gap-2 text-[var(--accent)]">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span className="text-xs font-semibold">Thinking...</span>
               </div>
-            ))}
-            <div />
+            )}
           </div>
-          <form onSubmit={sendMessage} className="mt-4 space-y-2">
-            <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
+
+          {/* Messages */}
+          <div ref={chatScrollRef} className="flex-1 overflow-y-auto space-y-4 pr-2 mb-6">
+            <AnimatePresence>
+              {messages.map((m, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className={`flex gap-3 ${m.role === "user" ? "flex-row-reverse" : "flex-row"}`}
+                >
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                    m.role === "assistant" 
+                      ? "bg-gradient-to-br from-[var(--accent)]/20 to-[var(--accent)]/5 border border-[var(--accent)]/30" 
+                      : "bg-white/10 border border-white/20"
+                  }`}>
+                    {m.role === "assistant" ? (
+                      <Bot className="w-4 h-4 text-[var(--accent)]" />
+                    ) : (
+                      <User className="w-4 h-4 text-white" />
+                    )}
+                  </div>
+                  <div className={`flex-1 rounded-2xl p-4 ${
+                    m.role === "assistant" 
+                      ? "bg-gradient-to-br from-white/5 to-transparent border border-white/10" 
+                      : "bg-[var(--accent)]/20 border border-[var(--accent)]/30"
+                  }`}>
+                    <p className={`text-xs uppercase tracking-wider mb-2 font-semibold ${
+                      m.role === "assistant" ? "text-gray-400" : "text-[var(--accent)]"
+                    }`}>
+                      {m.role === "assistant" ? "AI Assistant" : "You"}
+                    </p>
+                    <p className="text-sm leading-relaxed text-white">{m.content}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+
+          {/* Input Form */}
+          <form onSubmit={sendMessage} className="space-y-3" suppressHydrationWarning>
+            <div className="flex gap-3">
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder='Ask: "Find Python developers with 3 years experience"'
-                className="flex-1 rounded-xl bg-white/5 border border-white/10 px-3 py-3 text-sm focus:border-(--accent) focus:outline-none"
-              />
-              <button
-                type="submit"
-                className="pill bg-(--accent) text-black font-semibold hover:scale-105 transition whitespace-nowrap disabled:opacity-60"
+                placeholder='Ask: "Find senior React developers in San Francisco"'
+                className="flex-1 rounded-xl bg-white/5 border border-white/10 px-4 py-3.5 text-sm focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/20 transition-all"
                 disabled={loading}
+                suppressHydrationWarning
+              />
+              <motion.button
+                type="submit"
+                className="rounded-full bg-[var(--accent)] text-black font-bold px-6 py-3.5 disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2 hover:scale-105 transition-transform shadow-lg hover:shadow-[0_0_30px_rgba(198,243,107,0.3)]"
+                disabled={loading || !input.trim()}
+                whileHover={{ scale: loading || !input.trim() ? 1 : 1.05 }}
+                whileTap={{ scale: loading || !input.trim() ? 1 : 0.95 }}
               >
-                Send
-              </button>
+                {loading ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <Send className="w-5 h-5" />
+                )}
+              </motion.button>
             </div>
+            <p className="text-xs text-gray-500">
+              Try: "Python developers with ML experience" or "Frontend engineers in NYC"
+            </p>
           </form>
-        </section>
+        </motion.section>
 
-        <section className="glass-card rounded-2xl p-5 space-y-4 min-h-[70vh]">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="mono-label">Candidate Results</p>
-              <p className="text-sm text-gray-300">
-                {stats.count === 0 ? "No matches yet" : `${stats.count} matches`}
-              </p>
-            </div>
-            <span className="pill bg-white/8 text-white text-xs">AI matched</span>
-          </div>
-
-          {stats.skills.length > 0 && (
-            <div className="rounded-2xl border border-white/10 bg-white/3 p-4">
-              <p className="text-xs text-gray-400 mb-2">Top skills in results</p>
-              <div className="flex flex-wrap gap-2">
-                {stats.skills.map((s) => (
-                  <span key={s} className="pill bg-white/8 text-white text-[11px] border border-white/10">
-                    {s}
-                  </span>
-                ))}
+        {/* Results Section */}
+        <div className="space-y-6">
+          {/* Stats Card */}
+          <motion.section 
+            className="glass-card rounded-3xl p-6"
+            initial="hidden"
+            animate="visible"
+            variants={fadeIn}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--accent)]/20 to-[var(--accent)]/5 border border-[var(--accent)]/30 flex items-center justify-center">
+                <Users className="w-6 h-6 text-[var(--accent)]" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold">Search Results</h3>
+                <p className="text-xs text-gray-400">
+                  {stats.count === 0 ? "No matches yet" : `${stats.count} candidate${stats.count > 1 ? "s" : ""} found`}
+                </p>
               </div>
             </div>
-          )}
 
-          {candidates.length === 0 && (
-            <p className="text-gray-400 text-sm">Ask the assistant to search. Results will appear here.</p>
-          )}
+            {stats.count > 0 && (
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="rounded-xl border border-white/10 bg-gradient-to-br from-white/5 to-transparent p-4">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Users className="w-4 h-4 text-[var(--accent)]" />
+                    <p className="text-xs text-gray-400">Total Matches</p>
+                  </div>
+                  <p className="text-2xl font-black text-[var(--accent)]">{stats.count}</p>
+                </div>
+                <div className="rounded-xl border border-white/10 bg-gradient-to-br from-white/5 to-transparent p-4">
+                  <div className="flex items-center gap-2 mb-1">
+                    <TrendingUp className="w-4 h-4 text-[var(--accent)]" />
+                    <p className="text-xs text-gray-400">Top Skills</p>
+                  </div>
+                  <p className="text-2xl font-black text-white">{stats.skills.length}</p>
+                </div>
+              </div>
+            )}
 
-          {candidates.length > 0 && (
-            <div className="overflow-x-auto rounded-xl border border-white/10 bg-white/3">
-              <table className="w-full text-sm text-left">
-                <thead className="uppercase text-[11px] tracking-[0.15em] text-gray-400 border-b border-white/10">
-                  <tr>
-                    <th className="px-4 py-3">Candidate</th>
-                    <th className="px-4 py-3">Skills</th>
-                    <th className="px-4 py-3">Experience</th>
-                    <th className="px-4 py-3">Location</th>
-                    <th className="px-4 py-3 text-right">Profile</th>
-                  </tr>
-                </thead>
-                <tbody>
+            {stats.skills.length > 0 && (
+              <div className="rounded-xl border border-white/10 bg-gradient-to-br from-white/5 to-transparent p-4">
+                <p className="text-xs text-gray-400 mb-3 font-semibold uppercase tracking-wider">Top Skills in Results</p>
+                <div className="flex flex-wrap gap-2">
+                  {stats.skills.map((s, idx) => (
+                    <motion.span 
+                      key={s}
+                      className="pill bg-[var(--accent)]/10 text-[var(--accent)] text-xs border border-[var(--accent)]/30 font-semibold"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: idx * 0.1 }}
+                    >
+                      {s}
+                    </motion.span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {candidates.length === 0 && (
+              <div className="text-center py-8">
+                <div className="w-16 h-16 mx-auto rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-4">
+                  <Sparkles className="w-8 h-8 text-gray-400" />
+                </div>
+                <p className="text-sm text-gray-400">
+                  Ask the AI assistant to search for candidates.
+                  <br />
+                  Results will appear here.
+                </p>
+              </div>
+            )}
+          </motion.section>
+
+          {/* Candidates List */}
+          <AnimatePresence>
+            {candidates.length > 0 && (
+              <motion.section 
+                className="glass-card rounded-3xl p-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+              >
+                <h3 className="text-sm font-bold text-gray-300 mb-4 uppercase tracking-wider">Matched Candidates</h3>
+                <div className="space-y-3">
                   {candidates.map((c, idx) => {
                     const skills = (c.skills || "")
                       .split(",")
@@ -171,41 +295,52 @@ export default function AiAssistantPage() {
                       .filter(Boolean)
                       .slice(0, 3);
                     return (
-                      <tr key={c.id || c.email || idx} className="border-b border-white/5 hover:bg-white/5 transition">
-                        <td className="px-4 py-3">
-                          <div className="font-semibold text-white">{c.name || "Unnamed"}</div>
-                          <div className="text-xs text-gray-400">{c.email || "Email unavailable"}</div>
-                        </td>
-                        <td className="px-4 py-3">
-                          <div className="flex flex-wrap gap-2">
-                            {skills.length === 0 && <span className="text-xs text-gray-400">No skills listed</span>}
-                            {skills.map((skill) => (
-                              <span key={skill} className="pill bg-white/8 text-white text-[11px] border border-white/10">
-                                {skill}
-                              </span>
-                            ))}
+                      <motion.div
+                        key={c.id || c.email || idx}
+                        className="rounded-xl border border-white/10 bg-gradient-to-br from-white/5 to-transparent p-4 hover:border-[var(--accent)]/30 transition-all"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: idx * 0.1 }}
+                      >
+                        <div className="flex items-start justify-between gap-3 mb-3">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <h4 className="font-bold text-white truncate">{c.name || "Unnamed"}</h4>
+                              <CheckCircle2 className="w-4 h-4 text-[var(--accent)] flex-shrink-0" />
+                            </div>
+                            <p className="text-xs text-gray-400 truncate">{c.email || "No email"}</p>
                           </div>
-                        </td>
-                        <td className="px-4 py-3 text-gray-200">{c.experienceYears ?? "-"} yrs</td>
-                        <td className="px-4 py-3 text-gray-200">{c.location || "Location unknown"}</td>
-                        <td className="px-4 py-3 text-right">
                           <Link
                             href={`/candidate/${c.id}`}
-                            className="inline-flex items-center justify-center px-4 py-2 rounded-full border border-white/20 text-white hover:border-(--accent) hover:scale-105 transition text-xs bg-white/5"
+                            className="rounded-full border border-white/20 hover:border-[var(--accent)] px-4 py-2 text-xs font-semibold text-white hover:bg-white/5 transition-all flex-shrink-0"
                           >
-                            View
+                            View Profile
                           </Link>
-                        </td>
-                      </tr>
+                        </div>
+                        <div className="flex flex-wrap gap-2 mb-2">
+                          {skills.length === 0 && (
+                            <span className="text-xs text-gray-500">No skills listed</span>
+                          )}
+                          {skills.map((skill) => (
+                            <span key={skill} className="pill bg-white/10 text-white text-xs border border-white/20">
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                        <div className="flex items-center gap-4 text-xs text-gray-400">
+                          <span>{c.experienceYears ?? "-"} years exp</span>
+                          <span>·</span>
+                          <span>{c.location || "Location unknown"}</span>
+                        </div>
+                      </motion.div>
                     );
                   })}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </section>
+                </div>
+              </motion.section>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </div>
   );
 }
-
