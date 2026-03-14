@@ -14,6 +14,7 @@ export default function UploadResumePage() {
   const [results, setResults] = useState([]);
   const [resultErrors, setResultErrors] = useState([]);
   const [successMessage, setSuccessMessage] = useState("");
+  const [dedupeResults, setDedupeResults] = useState([]);
 
   const acceptedLabel = useMemo(() => accept.join(", ").toUpperCase(), []);
 
@@ -53,8 +54,10 @@ export default function UploadResumePage() {
 
       const candidates = Array.isArray(data?.candidates) ? data.candidates : [];
       const errors = Array.isArray(data?.errors) ? data.errors : [];
+      const dedupe = Array.isArray(data?.dedupeResults) ? data.dedupeResults : [];
       setResults(candidates);
       setResultErrors(errors);
+      setDedupeResults(dedupe);
       if (candidates.length > 0) {
         setSuccessMessage(`Uploaded ${candidates.length} file${candidates.length > 1 ? "s" : ""} successfully.`);
       }
@@ -155,6 +158,7 @@ export default function UploadResumePage() {
                 setResults([]);
                 setResultErrors([]);
                 setSuccessMessage("");
+                setDedupeResults([]);
               }}
               className="pill border border-white/10 text-white hover:border-white/30 transition"
             >
@@ -173,6 +177,20 @@ export default function UploadResumePage() {
                 {resultErrors.map((e, idx) => (
                   <li key={`${e.name}-${idx}`}>{e.name}: {e.error}</li>
                 ))}
+              </ul>
+            </div>
+          )}
+          {dedupeResults.some((r) => r && r.updated === false) && (
+            <div className="mt-3 rounded-2xl border border-white/10 bg-white/5 p-4">
+              <p className="text-xs text-gray-400">Skipped duplicates</p>
+              <ul className="mt-2 space-y-1 text-sm text-gray-300">
+                {dedupeResults
+                  .filter((r) => r && r.updated === false)
+                  .map((r, idx) => (
+                    <li key={`${r.email || r.id || "dup"}-${idx}`}>
+                      {r.name || "Candidate"} — resume too similar ({Math.round(r.differencePercentage)}% different)
+                    </li>
+                  ))}
               </ul>
             </div>
           )}

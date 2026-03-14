@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { getUser } from "@/lib/auth";
 
 const accept = [".pdf", ".docx"];
 
@@ -34,11 +35,19 @@ export default function CandidateResumePage() {
     }
     setLoading(true);
     try {
-      // Placeholder: wire to /api/upload-resume or candidate-specific endpoint later.
-      await new Promise((r) => setTimeout(r, 800));
-      setSuccess("Resume uploaded and queued for parsing.");
+      const formData = new FormData();
+      formData.append("file", file);
+      // Pass candidate email so the backend can upsert against the right record
+      const user = getUser();
+      if (user?.email) formData.append("email", user.email);
+
+      const res = await fetch("/api/upload", { method: "POST", body: formData });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || "Upload failed");
+      setSuccess("Resume uploaded and parsed successfully.");
+      setFile(null);
     } catch (e) {
-      setError("Upload failed. Try again.");
+      setError(e?.message || "Upload failed. Try again.");
     } finally {
       setLoading(false);
     }

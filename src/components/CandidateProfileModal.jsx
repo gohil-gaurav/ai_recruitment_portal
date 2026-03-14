@@ -57,7 +57,7 @@ export default function CandidateProfileModal({ candidate, isOpen, onClose }) {
             </div>
             {candidate.summary && (
               <p className="text-gray-600 leading-relaxed italic mt-4 bg-blue-50 p-4 rounded-lg border border-blue-200">
-                "{candidate.summary}"
+                &ldquo;{candidate.summary}&rdquo;
               </p>
             )}
           </div>
@@ -75,7 +75,7 @@ export default function CandidateProfileModal({ candidate, isOpen, onClose }) {
               <div className="space-y-3">
                 {candidate.phone && (
                   <div className="flex items-center text-gray-700 hover:text-blue-600 transition cursor-pointer">
-                    <svg className="w-5 h-5 mr-3 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 mr-3 twrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 00.948.684l1.498 7.985a1 1 0 00.502.756l4.049 2.25a1 1 0 001.053-.855l1.518-8.307a1 1 0 00-.804-1.119L15.5 9"></path>
                     </svg>
                     <a href={`tel:${candidate.phone}`} className="font-medium">
@@ -85,7 +85,7 @@ export default function CandidateProfileModal({ candidate, isOpen, onClose }) {
                 )}
                 {candidate.location && (
                   <div className="flex items-start text-gray-700">
-                    <svg className="w-5 h-5 mr-3 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 mr-3 text-blue-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                     </svg>
@@ -139,7 +139,7 @@ export default function CandidateProfileModal({ candidate, isOpen, onClose }) {
                 link.url ? (
                   <a
                     key={link.name}
-                    href={link.url.startsWith('http') ? link.url : `https://${link.url}`}
+                    href={/^https?:\/\//i.test(link.url.trim()) ? link.url.trim() : `https://${link.url.trim()}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center px-5 py-3 bg-linear-to-r hover:from-blue-50 hover:to-purple-50 border-2 border-gray-200 hover:border-blue-300 rounded-xl text-gray-700 hover:text-blue-600 transition-all duration-200 font-semibold group"

@@ -90,7 +90,6 @@ export default function RecruiterDashboard() {
 
   useEffect(() => {
     fetchAll();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const updateFilter = (key, value) => {
@@ -117,7 +116,7 @@ export default function RecruiterDashboard() {
           </Link>
           <button
             onClick={fetchAll}
-            className="pill bg-white/10 border border-white/15 text-white hover:border-[var(--accent)] hover:scale-105 transition"
+            className="pill bg-white/10 border border-white/15 text-white hover:border-(--accent) hover:scale-105 transition"
           >
             Refresh
           </button>
@@ -177,7 +176,7 @@ export default function RecruiterDashboard() {
             <select
               value={filters.pipelineStatus}
               onChange={(e) => updateFilter("pipelineStatus", e.target.value)}
-              className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2 text-sm focus:border-[var(--accent)] focus:outline-none text-white"
+              className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2 text-sm focus:border-(--accent) focus:outline-none text-white"
             >
               <option value="">All Statuses</option>
               <option value="Applied">Applied</option>
@@ -214,7 +213,7 @@ export default function RecruiterDashboard() {
               <button
                 onClick={handleSearch}
                 disabled={loading}
-                className="pill bg-[var(--accent)] text-black font-semibold hover:scale-105 transition disabled:opacity-60"
+                className="pill bg-(--accent) text-black font-semibold hover:scale-105 transition disabled:opacity-60"
               >
                 {loading ? "Searching..." : "Search"}
               </button>
@@ -233,7 +232,7 @@ export default function RecruiterDashboard() {
           </div>
 
           {/* Results */}
-          <div className="glass-card rounded-2xl p-5 min-h-[320px]">
+          <div className="glass-card rounded-2xl p-5 min-h-80">
             <div className="flex items-center justify-between mb-4 gap-3">
               <div>
                 <p className="mono-label">Candidate Results</p>

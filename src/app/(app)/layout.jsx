@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { getUser, clearUser } from "@/lib/auth";
 
 const navItems = [
   { label: "Dashboard", href: "/dashboard" },
@@ -16,6 +17,20 @@ export default function AppLayout({ children }) {
   const pathname = usePathname();
   const router = useRouter();
   const [avatarOpen, setAvatarOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    setUser(getUser());
+    setIsReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isReady) return;
+    if (!user || user.role !== "HR") {
+      router.replace("/login");
+    }
+  }, [router, user, isReady]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
@@ -27,9 +42,11 @@ export default function AppLayout({ children }) {
   };
 
   const handleLogout = () => {
-    // Placeholder: wire to auth logic when available
+    clearUser();
     router.push("/");
   };
+
+  if (!isReady || !user) return null;
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-linear-to-b from-[#0b0b0f] via-[#0f0f12] to-black text-white">
@@ -142,7 +159,7 @@ export default function AppLayout({ children }) {
                   onClick={() => setAvatarOpen((v) => !v)}
                   className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-xs font-semibold hover:border-(--accent) transition"
                 >
-                  RH
+                  {(user?.name || "HR").slice(0, 2).toUpperCase()}
                 </button>
                 {avatarOpen && (
                   <div className="absolute right-0 mt-2 w-44 overflow-hidden rounded-2xl border border-white/15 bg-black/85 shadow-2xl backdrop-blur-xl text-sm z-50">

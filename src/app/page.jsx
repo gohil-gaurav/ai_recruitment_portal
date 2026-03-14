@@ -135,7 +135,7 @@ function ScrollReveal({ children, delay = 0 }) {
 
 export default function Landing() {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#0b0b0f] via-[#0f0f12] to-black text-white">
+    <div className="relative min-h-screen overflow-hidden bg-linear-to-b from-[#0b0b0f] via-[#0f0f12] to-black text-white">
       <motion.div 
         className="magic-grid animated-grid" 
         aria-hidden
@@ -159,7 +159,7 @@ export default function Landing() {
           whileHover={{ scale: 1.02 }}
           transition={{ duration: 0.2 }}
         >
-          <div className="w-11 h-11 rounded-xl neon-border flex items-center justify-center font-black text-lg bg-gradient-to-br from-[var(--accent)]/10 to-transparent">
+          <div className="w-11 h-11 rounded-xl neon-border flex items-center justify-center font-black text-lg bg-linear-to-br from-(--accent)/10 to-transparent">
             V
           </div>
           <div>
@@ -173,13 +173,13 @@ export default function Landing() {
           <a href="#pricing" className="hidden sm:inline text-sm text-gray-300 hover:text-white transition-colors px-3 py-2">Pricing</a>
           <Link
             href="/login"
-            className="hidden sm:inline pill border border-white/15 text-sm text-white hover:border-[var(--accent)] transition animated-button"
+            className="hidden sm:inline pill border border-white/15 text-sm text-white hover:border-(--accent) transition animated-button"
           >
             Login
           </Link>
           <Link
             href="/signup"
-            className="pill bg-[var(--accent)] text-black font-semibold animated-button text-sm"
+            className="pill bg-(--accent) text-black font-semibold animated-button text-sm"
           >
             Get Started
           </Link>
@@ -191,13 +191,13 @@ export default function Landing() {
         <section className="pt-16 pb-8 grid lg:grid-cols-[1.1fr_0.9fr] gap-16 items-center">
           <div className="space-y-8">
             <motion.div 
-              className="inline-flex items-center gap-2 px-4 py-2 neon-border rounded-full text-xs uppercase tracking-wider text-[var(--muted)] bg-white/5"
+              className="inline-flex items-center gap-2 px-4 py-2 neon-border rounded-full text-xs uppercase tracking-wider text-(--muted) bg-white/5"
               initial="hidden"
               animate="visible"
               variants={fadeInUp}
               transition={{ duration: 0.7, delay: 0.2 }}
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-(--accent) animate-pulse" />
               Powered by AI · Built for Scale
             </motion.div>
             
@@ -209,7 +209,7 @@ export default function Landing() {
               transition={{ duration: 0.7, delay: 0.2 }}
             >
               AI-powered hiring that feels{" "}
-              <span className="text-[var(--accent)] telepathic-glow inline-block">
+              <span className="text-(--accent) telepathic-glow inline-block">
                 telepathic
               </span>
               .
@@ -232,7 +232,7 @@ export default function Landing() {
               variants={fadeInUp}
               transition={{ duration: 0.5, delay: 0.5 }}
             >
-              <Link href="/signup" className="pill bg-[var(--accent)] text-black font-bold shadow-2xl animated-button text-base px-8 py-3">
+              <Link href="/signup" className="pill bg-(--accent) text-black font-bold shadow-2xl animated-button text-base px-8 py-3">
                 Start Free Trial
               </Link>
               <a
@@ -270,7 +270,7 @@ export default function Landing() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.4, delay: 0.7 + idx * 0.1 }}
                 >
-                  <item.icon className="w-4 h-4 text-[var(--accent)]" />
+                  <item.icon className="w-4 h-4 text-(--accent)" />
                   <span>{item.text}</span>
                 </motion.div>
               ))}
@@ -289,14 +289,14 @@ export default function Landing() {
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-6">
                 <span className="mono-label text-xs">Live Demo</span>
-                <span className="pill bg-[var(--accent)]/20 text-[var(--accent)] text-xs border border-[var(--accent)]/30">
-                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-[var(--accent)] mr-1.5 animate-pulse" />
+                <span className="pill bg-(--accent)/20 text-(--accent) text-xs border border-(--accent)/30">
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-(--accent) mr-1.5 animate-pulse" />
                   Active
                 </span>
               </div>
               <div className="space-y-4 text-sm">
                 <motion.div 
-                  className="flex items-center justify-between p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-[var(--accent)]/30 transition-colors"
+                  className="flex items-center justify-between p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-(--accent)/30 transition-colors"
                   whileHover={{ scale: 1.02 }}
                   transition={{ duration: 0.2 }}
                 >
@@ -305,11 +305,11 @@ export default function Landing() {
                     <p className="font-semibold text-white">elena-rojas.pdf</p>
                     <p className="text-xs text-gray-500 mt-1">2.4 MB · PDF</p>
                   </div>
-                  <span className="pill bg-[var(--accent)] text-black font-semibold text-xs">Parsing</span>
+                  <span className="pill bg-(--accent) text-black font-semibold text-xs">Parsing</span>
                 </motion.div>
                 
                 <motion.div 
-                  className="p-5 rounded-2xl bg-gradient-to-br from-white/5 to-white/0 border border-white/10"
+                  className="p-5 rounded-2xl bg-linear-to-br from-white/5 to-white/0 border border-white/10"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 1.2 }}
@@ -320,7 +320,7 @@ export default function Landing() {
                   </p>
                   <div className="flex gap-2 mt-3 flex-wrap">
                     {["Python", "ML", "Cloud"].map(tag => (
-                      <span key={tag} className="px-2 py-1 rounded-lg bg-[var(--accent)]/10 text-[var(--accent)] text-xs border border-[var(--accent)]/20">
+                      <span key={tag} className="px-2 py-1 rounded-lg bg-(--accent)/10 text-(--accent) text-xs border border-(--accent)/20">
                         {tag}
                       </span>
                     ))}
@@ -332,7 +332,7 @@ export default function Landing() {
                   {["Applied", "Interview", "Offer"].map((label, idx) => (
                     <motion.div 
                       key={label} 
-                      className="rounded-xl bg-white/5 border border-white/10 py-4 hover:border-[var(--accent)]/30 transition-colors"
+                      className="rounded-xl bg-white/5 border border-white/10 py-4 hover:border-(--accent)/30 transition-colors"
                       whileHover={{ y: -2 }}
                       transition={{ duration: 0.2 }}
                       initial={{ opacity: 0, scale: 0.9 }}
@@ -353,10 +353,10 @@ export default function Landing() {
                 >
                   <p className="text-xs text-gray-400 mb-2">Vector Search Result</p>
                   <p className="font-semibold text-white">
-                    "Senior ML engineer fintech risk"
+                    &quot;Senior ML engineer fintech risk&quot;
                   </p>
                   <div className="flex items-center gap-2 mt-2">
-                    <span className="text-[var(--accent)] font-bold">12 matches</span>
+                    <span className="text-(--accent) font-bold">12 matches</span>
                     <span className="text-gray-500">·</span>
                     <span className="text-gray-400 text-xs">180ms</span>
                   </div>
@@ -379,7 +379,7 @@ export default function Landing() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: idx * 0.1 }}
                 >
-                  <div className="text-4xl md:text-5xl font-black text-[var(--accent)] mb-2">
+                  <div className="text-4xl md:text-5xl font-black text-(--accent) mb-2">
                     {stat.value}
                   </div>
                   <div className="text-sm text-gray-400 uppercase tracking-wider">
@@ -409,12 +409,12 @@ export default function Landing() {
             {features.map((item, idx) => (
               <ScrollReveal key={item.title} delay={idx * 0.1}>
                 <article className="glass-card rounded-2xl p-6 hover-tilt animated-card h-full group">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--accent)]/20 to-[var(--accent)]/5 border border-[var(--accent)]/30 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                    <item.icon className="w-6 h-6 text-[var(--accent)]" />
+                  <div className="w-12 h-12 rounded-xl bg-linear-to-br from-(--accent)/20 to-(--accent)/5 border border-(--accent)/30 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <item.icon className="w-6 h-6 text-(--accent)" />
                   </div>
                   <div className="flex items-start justify-between mb-3">
                     <h3 className="text-xl font-bold">{item.title}</h3>
-                    <span className="pill bg-[var(--accent)]/10 text-[var(--accent)] text-xs border border-[var(--accent)]/20">
+                    <span className="pill bg-(--accent)/10 text-(--accent) text-xs border border-(--accent)/20">
                       {item.highlight}
                     </span>
                   </div>
@@ -445,23 +445,23 @@ export default function Landing() {
                 {workflow.map((item, idx) => (
                   <motion.div 
                     key={item.step} 
-                    className="relative p-5 rounded-2xl bg-gradient-to-br from-white/5 to-transparent border border-white/10 text-center hover:border-[var(--accent)]/30 transition-all group"
+                    className="relative p-5 rounded-2xl bg-linear-to-br from-white/5 to-transparent border border-white/10 text-center hover:border-(--accent)/30 transition-all group"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.4, delay: idx * 0.1 }}
                     whileHover={{ y: -4 }}
                   >
-                    <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-[var(--accent)]/20 to-[var(--accent)]/5 border border-[var(--accent)]/30 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                      <item.icon className="w-6 h-6 text-[var(--accent)]" />
+                    <div className="w-12 h-12 mx-auto rounded-xl bg-linear-to-br from-(--accent)/20 to-(--accent)/5 border border-(--accent)/30 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                      <item.icon className="w-6 h-6 text-(--accent)" />
                     </div>
-                    <p className="mono-label mb-2 text-[var(--accent)]">
+                    <p className="mono-label mb-2 text-(--accent)">
                       {String(idx + 1).padStart(2, '0')}
                     </p>
                     <p className="font-bold text-white mb-2">{item.step}</p>
                     <p className="text-xs text-gray-500">{item.time}</p>
                     {idx < workflow.length - 1 && (
-                      <span className="hidden sm:block absolute right-[-12px] top-1/2 -translate-y-1/2 text-[var(--accent)] text-xl">
+                      <span className="hidden sm:block absolute -right-3 top-1/2 -translate-y-1/2 text-(--accent) text-xl">
                         →
                       </span>
                     )}
@@ -494,12 +494,12 @@ export default function Landing() {
                   whileHover={{ scale: 1.05 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-[var(--accent)]/20 to-[var(--accent)]/5 border border-[var(--accent)]/30 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                    <item.icon className="w-6 h-6 text-[var(--accent)]" />
+                  <div className="w-12 h-12 mx-auto rounded-xl bg-linear-to-br from-(--accent)/20 to-(--accent)/5 border border-(--accent)/30 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                    <item.icon className="w-6 h-6 text-(--accent)" />
                   </div>
                   <p className="mono-label mb-2 text-gray-500">Stage</p>
                   <p className="text-2xl font-black mb-2">{item.stage}</p>
-                  <div className="text-3xl font-black text-[var(--accent)] mb-3">
+                  <div className="text-3xl font-black text-(--accent) mb-3">
                     {item.count}
                   </div>
                   <p className="text-gray-400 text-xs leading-relaxed">
@@ -520,7 +520,7 @@ export default function Landing() {
                 Teams shipping faster with VectorHire.
               </h2>
               <p className="text-lg text-gray-400">
-                Join hundreds of recruiting teams who've transformed their hiring process.
+                Join hundreds of recruiting teams who&apos;ve transformed their hiring process.
               </p>
             </div>
           </ScrollReveal>
@@ -530,7 +530,7 @@ export default function Landing() {
               <ScrollReveal key={t.name} delay={idx * 0.15}>
                 <article className="glass-card rounded-2xl p-8 hover-tilt animated-card h-full">
                   <div className="flex items-start gap-4 mb-4">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--accent)]/20 to-[var(--accent)]/5 border border-[var(--accent)]/30 flex items-center justify-center font-bold text-[var(--accent)]">
+                    <div className="w-12 h-12 rounded-full bg-linear-to-br from-(--accent)/20 to-(--accent)/5 border border-(--accent)/30 flex items-center justify-center font-bold text-(--accent)">
                       {t.avatar}
                     </div>
                     <div>
@@ -539,11 +539,11 @@ export default function Landing() {
                     </div>
                   </div>
                   <p className="text-lg text-gray-300 leading-relaxed italic">
-                    "{t.quote}"
+                    &ldquo;{t.quote}&rdquo;
                   </p>
                   <div className="flex gap-1 mt-4">
                     {[...Array(5)].map((_, i) => (
-                      <span key={i} className="text-[var(--accent)]">★</span>
+                      <span key={i} className="text-(--accent)">★</span>
                     ))}
                   </div>
                 </article>
@@ -567,7 +567,7 @@ export default function Landing() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link 
                   href="/signup" 
-                  className="pill bg-[var(--accent)] text-black font-bold animated-button text-base px-10 py-4 shadow-2xl"
+                  className="pill bg-(--accent) text-black font-bold animated-button text-base px-10 py-4 shadow-2xl"
                 >
                   Start Free Trial
                 </Link>
@@ -591,7 +591,7 @@ export default function Landing() {
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div className="md:col-span-2">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl neon-border flex items-center justify-center font-black bg-gradient-to-br from-[var(--accent)]/10 to-transparent">
+                <div className="w-10 h-10 rounded-xl neon-border flex items-center justify-center font-black bg-linear-to-br from-(--accent)/10 to-transparent">
                   V
                 </div>
                 <div>

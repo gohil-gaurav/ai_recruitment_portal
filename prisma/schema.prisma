@@ -17,6 +17,11 @@ model Candidate {
   location        String?
   education       String?
   resumeText      String   // Using String since SQLite text is just String in prisma
+  resumeFileUrl   String?  // Path to the original uploaded PDF file
+  resumeHash      String?
+  contentHash     String?
+  resumeEmbedding Json?
+  duplicateFlag   Boolean  @default(false)
   pipelineStatus  String   @default("Applied")
   linkedin        String?
   github          String?
@@ -39,4 +44,51 @@ model Candidate {
   
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  
+  // Resume Deduplication Relations
+  resumes         Resume[]
+  deduplicationLogs DeduplicationLog[]
+
+  @@index([resumeHash])
+  @@index([contentHash])
+}
+
+model Resume {
+  id              String   @id @default(cuid())
+  candidateId     String
+  candidate       Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  documentPath    String
+  extractedData   Json     // JSONB: ResumeData structure
+  uploadedAt      DateTime @default(now())
+  uploadedBy      String?
+  version         Int      @default(1)
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations for deduplication logs
+  newResumeInLogs DeduplicationLog[] @relation("newResume")
+  similarResumeInLogs DeduplicationLog[] @relation("mostSimilarResume")
+  
+  @@index([candidateId])
+  @@index([isActive])
+}
+
+model DeduplicationLog {
+  id                    String   @id @default(cuid())
+  candidateId           String
+  candidate             Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  newResumeId           String
+  newResume             Resume @relation("newResume", fields: [newResumeId], references: [id], onDelete: Cascade)
+  mostSimilarResumeId   String?
+  mostSimilarResume     Resume? @relation("mostSimilarResume", fields: [mostSimilarResumeId], references: [id], onDelete: SetNull)
+  similarityScore       Float
+  differencePercentage  Float
+  decision              String   // "NEW_ENTRY" or "DUPLICATE"
+  timestamp             DateTime @default(now())
+  userId                String?
+  createdAt             DateTime @default(now())
+  
+  @@index([candidateId])
+  @@index([timestamp])
 }

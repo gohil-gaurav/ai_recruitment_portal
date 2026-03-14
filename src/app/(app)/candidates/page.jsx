@@ -117,7 +117,7 @@ export default function CandidatesPage() {
           </div>
         </aside>
 
-        <section className="glass-card rounded-2xl p-5 min-h-[420px]">
+        <section className="glass-card rounded-2xl p-5 min-h-105">
           <div className="flex items-center justify-between mb-4 gap-3">
             <div>
               <p className="mono-label">All candidates</p>

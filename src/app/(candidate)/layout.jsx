@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getUser, clearUser } from "@/lib/auth";
 
 const navItems = [
   { label: "Dashboard", href: "/candidate-dashboard" },
@@ -15,12 +16,22 @@ export default function CandidateLayout({ children }) {
   const pathname = usePathname();
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
+  const user = getUser();
+
+  useEffect(() => {
+    if (!user || user.role !== "CANDIDATE") {
+      router.replace("/login");
+    }
+  }, [router, user]);
 
   const isActive = (href) => pathname === href || pathname.startsWith(href + "/");
 
   const handleLogout = () => {
+    clearUser();
     router.push("/");
   };
+
+  if (!user) return null;
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-linear-to-b from-[#0b0b0f] via-[#0f0f12] to-black text-white">
@@ -102,7 +113,7 @@ export default function CandidateLayout({ children }) {
                 type="button"
                 className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-xs font-semibold hover:border-(--accent) transition"
               >
-                C
+                {(user?.name || "C").slice(0, 1).toUpperCase()}
               </button>
             </div>
           </header>

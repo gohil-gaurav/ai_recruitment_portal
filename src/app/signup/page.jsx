@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
+import { setUser } from "@/lib/auth";
 import { motion } from "framer-motion";
 import { 
   User, 
@@ -51,8 +52,8 @@ export default function SignupPage() {
         setLoading(false);
         return;
       }
-      // Simulate registration
       await new Promise((resolve) => setTimeout(resolve, 1000));
+      setUser({ email, role, name });
       router.push(redirectTo);
     } catch (err) {
       setError("Registration failed. Please try again.");
@@ -62,7 +63,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#0b0b0f] via-[#0f0f12] to-black text-white">
+    <div className="relative min-h-screen overflow-hidden bg-linear-to-b from-[#0b0b0f] via-[#0f0f12] to-black text-white">
       <motion.div 
         className="magic-grid animated-grid" 
         aria-hidden
@@ -82,7 +83,7 @@ export default function SignupPage() {
           transition={{ duration: 0.5 }}
         >
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-11 h-11 rounded-xl neon-border flex items-center justify-center font-black text-lg bg-gradient-to-br from-[var(--accent)]/10 to-transparent group-hover:scale-105 transition">
+            <div className="w-11 h-11 rounded-xl neon-border flex items-center justify-center font-black text-lg bg-linear-to-br from-(--accent)/10 to-transparent group-hover:scale-105 transition">
               V
             </div>
             <div>
@@ -92,7 +93,7 @@ export default function SignupPage() {
           </Link>
           <Link
             href="/login"
-            className="pill bg-white/10 border border-white/15 text-white hover:border-[var(--accent)] animated-button text-sm"
+            className="pill bg-white/10 border border-white/15 text-white hover:border-(--accent) animated-button text-sm"
           >
             Sign In
           </Link>
@@ -107,9 +108,9 @@ export default function SignupPage() {
             variants={fadeIn}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--accent)]/10 border border-[var(--accent)]/30 mb-6">
-              <Sparkles className="w-3.5 h-3.5 text-[var(--accent)]" />
-              <span className="text-xs text-[var(--accent)] font-semibold uppercase tracking-wider">Get Started Free</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-(--accent)/10 border border-(--accent)/30 mb-6">
+              <Sparkles className="w-3.5 h-3.5 text-(--accent)" />
+              <span className="text-xs text-(--accent) font-semibold uppercase tracking-wider">Get Started Free</span>
             </div>
 
             <h1 className="text-4xl md:text-5xl font-black mb-3">
@@ -124,20 +125,20 @@ export default function SignupPage() {
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-semibold text-gray-200 flex items-center gap-2">
-                    <User className="w-4 h-4 text-[var(--accent)]" />
+                    <User className="w-4 h-4 text-(--accent)" />
                     Full Name
                   </label>
                   <input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="John Doe"
-                    className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3.5 text-sm focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/20 transition-all"
+                    className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3.5 text-sm focus:border-(--accent) focus:outline-none focus:ring-2 focus:ring-(--accent)/20 transition-all"
                     disabled={loading}
                   />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-semibold text-gray-200 flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-[var(--accent)]" />
+                    <Mail className="w-4 h-4 text-(--accent)" />
                     Email Address
                   </label>
                   <input
@@ -145,7 +146,7 @@ export default function SignupPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="name@company.com"
-                    className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3.5 text-sm focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/20 transition-all"
+                    className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3.5 text-sm focus:border-(--accent) focus:outline-none focus:ring-2 focus:ring-(--accent)/20 transition-all"
                     disabled={loading}
                   />
                 </div>
@@ -154,7 +155,7 @@ export default function SignupPage() {
               {/* Password */}
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-gray-200 flex items-center gap-2">
-                  <Lock className="w-4 h-4 text-[var(--accent)]" />
+                  <Lock className="w-4 h-4 text-(--accent)" />
                   Password
                 </label>
                 <input
@@ -162,7 +163,7 @@ export default function SignupPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Create a strong password"
-                  className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3.5 text-sm focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/20 transition-all"
+                  className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3.5 text-sm focus:border-(--accent) focus:outline-none focus:ring-2 focus:ring-(--accent)/20 transition-all"
                   disabled={loading}
                 />
                 <p className="text-xs text-gray-500 mt-1">Minimum 8 characters recommended</p>
@@ -171,7 +172,7 @@ export default function SignupPage() {
               {/* Role Selection */}
               <div className="space-y-3">
                 <label className="text-sm font-semibold text-gray-200 flex items-center gap-2">
-                  <Target className="w-4 h-4 text-[var(--accent)]" />
+                  <Target className="w-4 h-4 text-(--accent)" />
                   I am signing up as
                 </label>
                 <div className="grid grid-cols-2 gap-4">
@@ -180,7 +181,7 @@ export default function SignupPage() {
                     onClick={() => setRole("HR")}
                     className={`group rounded-xl p-4 border-2 transition-all text-left ${
                       role === "HR"
-                        ? "border-[var(--accent)] bg-gradient-to-br from-[var(--accent)]/20 to-[var(--accent)]/5"
+                        ? "border-(--accent) bg-linear-to-br from-(--accent)/20 to-(--accent)/5"
                         : "border-white/20 bg-white/5 hover:border-white/30 hover:bg-white/10"
                     }`}
                     whileHover={{ scale: 1.02 }}
@@ -190,10 +191,10 @@ export default function SignupPage() {
                     <div className="flex items-center gap-3 mb-2">
                       <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition ${
                         role === "HR" 
-                          ? "bg-[var(--accent)]/30" 
+                          ? "bg-(--accent)/30" 
                           : "bg-white/10 group-hover:bg-white/20"
                       }`}>
-                        <Briefcase className={`w-5 h-5 ${role === "HR" ? "text-[var(--accent)]" : "text-gray-400"}`} />
+                        <Briefcase className={`w-5 h-5 ${role === "HR" ? "text-(--accent)" : "text-gray-400"}`} />
                       </div>
                       <div>
                         <p className={`font-bold text-sm ${role === "HR" ? "text-white" : "text-gray-300"}`}>
@@ -203,7 +204,7 @@ export default function SignupPage() {
                       </div>
                     </div>
                     {role === "HR" && (
-                      <div className="flex items-center gap-1 text-xs text-[var(--accent)]">
+                      <div className="flex items-center gap-1 text-xs text-(--accent)">
                         <CheckCircle2 className="w-3 h-3" />
                         <span>Selected</span>
                       </div>
@@ -215,7 +216,7 @@ export default function SignupPage() {
                     onClick={() => setRole("CANDIDATE")}
                     className={`group rounded-xl p-4 border-2 transition-all text-left ${
                       role === "CANDIDATE"
-                        ? "border-[var(--accent)] bg-gradient-to-br from-[var(--accent)]/20 to-[var(--accent)]/5"
+                        ? "border-(--accent) bg-linear-to-br from-(--accent)/20 to-(--accent)/5"
                         : "border-white/20 bg-white/5 hover:border-white/30 hover:bg-white/10"
                     }`}
                     whileHover={{ scale: 1.02 }}
@@ -225,10 +226,10 @@ export default function SignupPage() {
                     <div className="flex items-center gap-3 mb-2">
                       <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition ${
                         role === "CANDIDATE" 
-                          ? "bg-[var(--accent)]/30" 
+                          ? "bg-(--accent)/30" 
                           : "bg-white/10 group-hover:bg-white/20"
                       }`}>
-                        <UserCircle className={`w-5 h-5 ${role === "CANDIDATE" ? "text-[var(--accent)]" : "text-gray-400"}`} />
+                        <UserCircle className={`w-5 h-5 ${role === "CANDIDATE" ? "text-(--accent)" : "text-gray-400"}`} />
                       </div>
                       <div>
                         <p className={`font-bold text-sm ${role === "CANDIDATE" ? "text-white" : "text-gray-300"}`}>
@@ -238,7 +239,7 @@ export default function SignupPage() {
                       </div>
                     </div>
                     {role === "CANDIDATE" && (
-                      <div className="flex items-center gap-1 text-xs text-[var(--accent)]">
+                      <div className="flex items-center gap-1 text-xs text-(--accent)">
                         <CheckCircle2 className="w-3 h-3" />
                         <span>Selected</span>
                       </div>
@@ -256,14 +257,14 @@ export default function SignupPage() {
                   exit={{ opacity: 0, height: 0 }}
                 >
                   <label className="text-sm font-semibold text-gray-200 flex items-center gap-2">
-                    <Building2 className="w-4 h-4 text-[var(--accent)]" />
+                    <Building2 className="w-4 h-4 text-(--accent)" />
                     Company Name
                   </label>
                   <input
                     value={company}
                     onChange={(e) => setCompany(e.target.value)}
                     placeholder="Your company"
-                    className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3.5 text-sm focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/20 transition-all"
+                    className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3.5 text-sm focus:border-(--accent) focus:outline-none focus:ring-2 focus:ring-(--accent)/20 transition-all"
                     disabled={loading}
                   />
                 </motion.div>
@@ -283,7 +284,7 @@ export default function SignupPage() {
               <div className="flex flex-col sm:flex-row gap-4 pt-2">
                 <button
                   disabled={loading}
-                  className="flex-1 rounded-full bg-[var(--accent)] text-black font-bold text-base px-8 py-4 disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2 hover:scale-105 transition-transform shadow-lg hover:shadow-[0_0_30px_rgba(198,243,107,0.3)]"
+                  className="flex-1 rounded-full bg-(--accent) text-black font-bold text-base px-8 py-4 disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2 hover:scale-105 transition-transform shadow-lg hover:shadow-[0_0_30px_rgba(198,243,107,0.3)]"
                   type="submit"
                 >
                   {loading ? (
@@ -303,9 +304,9 @@ export default function SignupPage() {
               {/* Terms */}
               <p className="text-xs text-gray-500 text-center">
                 By creating an account, you agree to our{" "}
-                <a href="#" className="text-[var(--accent)] hover:underline">Terms of Service</a>
+                <a href="#" className="text-(--accent) hover:underline">Terms of Service</a>
                 {" "}and{" "}
-                <a href="#" className="text-[var(--accent)] hover:underline">Privacy Policy</a>
+                <a href="#" className="text-(--accent) hover:underline">Privacy Policy</a>
               </p>
             </form>
           </motion.section>
@@ -319,7 +320,7 @@ export default function SignupPage() {
             transition={{ duration: 0.6, delay: 0.4 }}
           >
             <div className="flex items-center gap-2 mb-6">
-              <Sparkles className="w-5 h-5 text-[var(--accent)]" />
+              <Sparkles className="w-5 h-5 text-(--accent)" />
               <p className="mono-label">Role-Based Experience</p>
             </div>
 
@@ -330,14 +331,14 @@ export default function SignupPage() {
               <motion.div 
                 className={`rounded-2xl p-5 border-2 transition-all ${
                   role === "HR" 
-                    ? "border-[var(--accent)]/50 bg-gradient-to-br from-[var(--accent)]/10 to-transparent" 
+                    ? "border-(--accent)/50 bg-linear-to-br from-(--accent)/10 to-transparent" 
                     : "border-white/10 bg-white/5"
                 }`}
                 whileHover={{ scale: 1.02 }}
               >
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[var(--accent)]/20 to-[var(--accent)]/5 border border-[var(--accent)]/30 flex items-center justify-center">
-                    <Briefcase className="w-5 h-5 text-[var(--accent)]" />
+                  <div className="w-10 h-10 rounded-lg bg-linear-to-br from-(--accent)/20 to-(--accent)/5 border border-(--accent)/30 flex items-center justify-center">
+                    <Briefcase className="w-5 h-5 text-(--accent)" />
                   </div>
                   <div>
                     <p className="font-bold text-white">HR / Recruiter</p>
@@ -346,19 +347,19 @@ export default function SignupPage() {
                 </div>
                 <ul className="space-y-2 text-sm text-gray-300">
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-[var(--accent)] flex-shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-(--accent) shrink-0" />
                     <span>AI-powered resume parsing</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-[var(--accent)] flex-shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-(--accent) shrink-0" />
                     <span>Semantic candidate search</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-[var(--accent)] flex-shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-(--accent) shrink-0" />
                     <span>Pipeline management & automation</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-[var(--accent)] flex-shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-(--accent) shrink-0" />
                     <span>AI assistant for queries</span>
                   </li>
                 </ul>
@@ -368,14 +369,14 @@ export default function SignupPage() {
               <motion.div 
                 className={`rounded-2xl p-5 border-2 transition-all ${
                   role === "CANDIDATE" 
-                    ? "border-[var(--accent)]/50 bg-gradient-to-br from-[var(--accent)]/10 to-transparent" 
+                    ? "border-(--accent)/50 bg-linear-to-br from-(--accent)/10 to-transparent" 
                     : "border-white/10 bg-white/5"
                 }`}
                 whileHover={{ scale: 1.02 }}
               >
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[var(--accent)]/20 to-[var(--accent)]/5 border border-[var(--accent)]/30 flex items-center justify-center">
-                    <UserCircle className="w-5 h-5 text-[var(--accent)]" />
+                  <div className="w-10 h-10 rounded-lg bg-linear-to-br from-(--accent)/20 to-(--accent)/5 border border-(--accent)/30 flex items-center justify-center">
+                    <UserCircle className="w-5 h-5 text-(--accent)" />
                   </div>
                   <div>
                     <p className="font-bold text-white">Candidate</p>
@@ -384,19 +385,19 @@ export default function SignupPage() {
                 </div>
                 <ul className="space-y-2 text-sm text-gray-300">
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-[var(--accent)] flex-shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-(--accent) shrink-0" />
                     <span>Track application status</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-[var(--accent)] flex-shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-(--accent) shrink-0" />
                     <span>Manage your resume</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-[var(--accent)] flex-shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-(--accent) shrink-0" />
                     <span>Update profile & preferences</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-[var(--accent)] flex-shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-(--accent) shrink-0" />
                     <span>Interview scheduling</span>
                   </li>
                 </ul>
@@ -405,9 +406,9 @@ export default function SignupPage() {
 
             <div className="divider-line my-6" />
 
-            <div className="rounded-xl bg-gradient-to-br from-[var(--accent)]/10 to-transparent border border-[var(--accent)]/30 p-4">
+            <div className="rounded-xl bg-linear-to-br from-(--accent)/10 to-transparent border border-(--accent)/30 p-4">
               <div className="flex items-center gap-2 mb-2">
-                <Shield className="w-4 h-4 text-[var(--accent)]" />
+                <Shield className="w-4 h-4 text-(--accent)" />
                 <p className="text-sm font-semibold text-white">Enterprise Security</p>
               </div>
               <p className="text-xs text-gray-400 leading-relaxed">
@@ -426,7 +427,7 @@ export default function SignupPage() {
         >
           <p className="text-sm text-gray-500">
             Already have an account?{" "}
-            <Link href="/login" className="text-[var(--accent)] hover:underline font-semibold">
+            <Link href="/login" className="text-(--accent) hover:underline font-semibold">
               Sign in here
             </Link>
           </p>

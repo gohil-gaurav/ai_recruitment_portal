@@ -6,6 +6,179 @@ import { useParams } from "next/navigation";
 
 const stages = ["Applied", "Shortlisted", "Interview", "Offer", "Hired"];
 
+function toAbsoluteUrl(url) {
+  if (!url) return "";
+  const trimmed = url.trim();
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return `https://${trimmed}`;
+}
+
+// Section headers that appear in caps in resumes
+const SECTION_HEADERS = /^(EXPERIENCE|EDUCATION|SKILLS|TECHNICAL SKILLS|PROJECTS|SUMMARY|OBJECTIVE|CERTIFICATIONS|LANGUAGES|AWARDS|PUBLICATIONS|REFERENCES|CONTACT|OPEN SOURCE|CONTRIBUTIONS?|ACHIEVEMENTS?|WORK EXPERIENCE|PROFESSIONAL SUMMARY|PROFILE|ABOUT|LINKS|ACTIVITIES|VOLUNTEER|INTERESTS?|COURSES?|TRAINING)/i;
+
+function isUrl(str) {
+  return /https?:\/\/\S+|www\.\S+|linkedin\.com\S*|github\.com\S*|codecrafter\S*/.test(str);
+}
+
+function isContactLine(str) {
+  return /\S+@\S+\.\S+|^\+?\d[\d\s\-().]{6,}|\d{10}/.test(str) || isUrl(str);
+}
+
+function linkify(text) {
+  const urlRe = /(https?:\/\/[^\s]+|www\.[^\s]+|linkedin\.com\/[^\s]+|github\.com\/[^\s]+)/g;
+  const parts = text.split(urlRe);
+  return parts.map((part, i) =>
+    urlRe.test(part) ? (
+      <a
+        key={i}
+        href={part.startsWith("http") ? part : `https://${part}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-(--accent) underline underline-offset-2 break-all hover:opacity-80 transition"
+      >
+        {part}
+      </a>
+    ) : (
+      part
+    )
+  );
+}
+
+function ResumeDocument({ text }) {
+  const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
+
+  // First non-empty line is usually the candidate name
+  const nameLineIdx = lines.findIndex((l) => l.length > 2 && l.length < 60 && !isContactLine(l));
+  const nameLine = nameLineIdx !== -1 ? lines[nameLineIdx] : null;
+
+  const parsed = [];
+  let currentSection = null;
+  let currentBody = [];
+
+  const flushSection = () => {
+    if (currentSection !== null || currentBody.length > 0) {
+      parsed.push({ section: currentSection, body: [...currentBody] });
+      currentBody = [];
+      currentSection = null;
+    }
+  };
+
+  lines.forEach((line, i) => {
+    if (i === nameLineIdx) return; // skip — rendered separately
+
+    if (SECTION_HEADERS.test(line) && line.length < 60) {
+      flushSection();
+      currentSection = line;
+    } else {
+      currentBody.push(line);
+    }
+  });
+  flushSection();
+
+  const normalizeSection = (section) => {
+    if (!section) return "CONTACT";
+    const s = section.toUpperCase();
+    if (s.includes("SUMMARY") || s.includes("OBJECTIVE") || s.includes("PROFILE") || s.includes("ABOUT")) {
+      return "SUMMARY";
+    }
+    if (s.includes("EXPERIENCE") || s.includes("WORK")) return "EXPERIENCE";
+    if (s.includes("EDUCATION")) return "EDUCATION";
+    if (s.includes("SKILL")) return "SKILLS";
+    if (s.includes("PROJECT")) return "PROJECTS";
+    if (s.includes("CERT")) return "CERTIFICATIONS";
+    if (s.includes("LINK") || s.includes("CONTACT") || s.includes("SOCIAL")) return "CONTACT";
+    return "OTHER";
+  };
+
+  const sectionMap = parsed.reduce((acc, block) => {
+    const key = normalizeSection(block.section);
+    const body = block.body.map((line) => line.trim()).filter(Boolean);
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(...body);
+    return acc;
+  }, {});
+
+  const looksLikeSkillList = (line) => {
+    if (!line) return false;
+    const items = line.split(",").map((s) => s.trim()).filter(Boolean);
+    if (items.length < 3) return false;
+    return items.every((item) => item.length <= 24);
+  };
+
+  if ((!sectionMap.SKILLS || sectionMap.SKILLS.length === 0) && sectionMap.OTHER?.length) {
+    const skillLines = sectionMap.OTHER.filter(looksLikeSkillList);
+    if (skillLines.length) {
+      sectionMap.SKILLS = [...(sectionMap.SKILLS || []), ...skillLines];
+      sectionMap.OTHER = sectionMap.OTHER.filter((line) => !skillLines.includes(line));
+    }
+  }
+
+  const orderedSections = [
+    { key: "SUMMARY", label: "Summary" },
+    { key: "EXPERIENCE", label: "Experience" },
+    { key: "EDUCATION", label: "Education" },
+    { key: "SKILLS", label: "Skills" },
+    { key: "PROJECTS", label: "Projects" },
+    { key: "CERTIFICATIONS", label: "Certifications" },
+    { key: "OTHER", label: "Additional" },
+  ];
+
+  return (
+    <div className="rounded-2xl border border-white/10 bg-black/40 max-h-170 overflow-auto">
+      <div className="sticky top-0 z-10 bg-black border-b border-white/10 px-5 py-4 shadow-[0_10px_24px_rgba(0,0,0,0.45)]">
+        <p className="text-[10px] uppercase tracking-[0.22em] text-gray-500">Resume Preview</p>
+        <p className="text-base font-semibold text-white tracking-wide mt-1">
+          {nameLine || "Candidate"}
+        </p>
+        <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-gray-400">
+          {(sectionMap.CONTACT || []).slice(0, 4).map((line, idx) => (
+            <span key={idx} className="break-all">
+              {linkify(line)}
+            </span>
+          ))}
+          {(sectionMap.CONTACT || []).length === 0 && <span>Contact not specified</span>}
+        </div>
+      </div>
+
+      <div className="px-5 py-4 text-sm space-y-6">
+        {orderedSections.map((section) => {
+          const body = (sectionMap[section.key] || []).slice(0, 6);
+          return (
+            <div key={section.key} className="pb-4 border-b border-white/5 last:border-b-0">
+              <div className="flex items-center gap-3 mb-2">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-(--accent)">
+                  {section.label}
+                </p>
+                <div className="flex-1 h-px bg-white/5" />
+              </div>
+              <div className="space-y-1.5">
+                {body.length === 0 ? (
+                  <p className="text-xs text-gray-500">Not specified</p>
+                ) : (
+                  body.map((line, li) => {
+                    const isBullet = /^[-•*▪]/.test(line);
+                    const cleanLine = isBullet ? line.replace(/^[-•*▪]\s*/, "") : line;
+                    return (
+                      <div key={li} className={`flex gap-2 ${isBullet ? "items-start" : "items-baseline"}`}>
+                        {isBullet && (
+                          <span className="mt-1.5 w-1 h-1 rounded-full bg-white/40 shrink-0" />
+                        )}
+                        <p className={`leading-relaxed ${isBullet ? "text-gray-300 text-xs" : "text-gray-200 text-xs"}`}>
+                          {linkify(cleanLine)}
+                        </p>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export default function CandidateProfilePage() {
   const { id } = useParams();
   const [candidate, setCandidate] = useState(null);
@@ -94,7 +267,7 @@ export default function CandidateProfilePage() {
       </div>
 
       <div className="grid lg:grid-cols-[1fr_380px] gap-6 items-start">
-        <section className="glass-card rounded-2xl p-5 min-h-[400px]">
+        <section className="glass-card rounded-2xl p-5 min-h-100">
           {loading && (
             <div className="flex items-center justify-center py-12">
               <p className="text-gray-400">Loading profile...</p>
@@ -130,7 +303,7 @@ export default function CandidateProfilePage() {
                   <span className="pill bg-white/10 text-white text-xs whitespace-nowrap">
                     {candidate.experienceYears ?? 0} yrs
                   </span>
-                  <span className="pill bg-[var(--accent)] text-black text-xs font-semibold whitespace-nowrap">
+                  <span className="pill bg-(--accent) text-black text-xs font-semibold whitespace-nowrap">
                     {candidate.pipelineStatus || "Applied"}
                   </span>
                 </div>
@@ -203,7 +376,7 @@ export default function CandidateProfilePage() {
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <p className="mono-label mb-3">SKILLS</p>
-                  <div className="flex flex-wrap gap-2 min-h-[40px]">
+                  <div className="flex flex-wrap gap-2 min-h-10">
                     {skills.length === 0 ? (
                       <span className="text-xs text-gray-400">No skills listed</span>
                     ) : (
@@ -217,7 +390,7 @@ export default function CandidateProfilePage() {
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <p className="mono-label mb-3">EDUCATION</p>
-                  <p className="text-sm text-gray-200 min-h-[20px]">
+                  <p className="text-sm text-gray-200 min-h-5">
                     {candidate.education || "Not specified"}
                   </p>
                 </div>
@@ -273,50 +446,50 @@ export default function CandidateProfilePage() {
                   <div className="flex flex-wrap gap-2">
                     {candidate.linkedin && (
                       <a
-                        href={candidate.linkedin}
+                        href={toAbsoluteUrl(candidate.linkedin)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="pill bg-white/10 border border-white/15 text-white hover:border-[var(--accent)] transition text-xs"
+                        className="pill bg-white/10 border border-white/15 text-white hover:border-(--accent) transition text-xs"
                       >
                         LinkedIn
                       </a>
                     )}
                     {candidate.github && (
                       <a
-                        href={candidate.github}
+                        href={toAbsoluteUrl(candidate.github)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="pill bg-white/10 border border-white/15 text-white hover:border-[var(--accent)] transition text-xs"
+                        className="pill bg-white/10 border border-white/15 text-white hover:border-(--accent) transition text-xs"
                       >
                         GitHub
                       </a>
                     )}
                     {candidate.portfolio && (
                       <a
-                        href={candidate.portfolio}
+                        href={toAbsoluteUrl(candidate.portfolio)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="pill bg-white/10 border border-white/15 text-white hover:border-[var(--accent)] transition text-xs"
+                        className="pill bg-white/10 border border-white/15 text-white hover:border-(--accent) transition text-xs"
                       >
                         Portfolio
                       </a>
                     )}
                     {candidate.website && (
                       <a
-                        href={candidate.website}
+                        href={toAbsoluteUrl(candidate.website)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="pill bg-white/10 border border-white/15 text-white hover:border-[var(--accent)] transition text-xs"
+                        className="pill bg-white/10 border border-white/15 text-white hover:border-(--accent) transition text-xs"
                       >
                         Website
                       </a>
                     )}
                     {candidate.twitter && (
                       <a
-                        href={candidate.twitter}
+                        href={toAbsoluteUrl(candidate.twitter)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="pill bg-white/10 border border-white/15 text-white hover:border-[var(--accent)] transition text-xs"
+                        className="pill bg-white/10 border border-white/15 text-white hover:border-(--accent) transition text-xs"
                       >
                         Twitter
                       </a>
@@ -350,28 +523,46 @@ export default function CandidateProfilePage() {
           )}
         </section>
 
-        <aside className="glass-card rounded-2xl p-5 space-y-4 hover-tilt min-h-[400px]">
-          <div>
-            <p className="mono-label">RESUME PREVIEW</p>
-            <p className="text-sm text-gray-300">Extracted text snapshot</p>
+        <aside className="glass-card rounded-2xl p-5 space-y-4 min-h-100">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="mono-label">RESUME PREVIEW</p>
+              <p className="text-sm text-gray-300">Structured document view</p>
+            </div>
+            <div className="flex items-center gap-2">
+              {candidate?.resumeFileUrl && (
+                <a
+                  href={candidate.resumeFileUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="pill bg-(--accent) text-black text-[11px] font-semibold hover:scale-105 transition"
+                >
+                  Open PDF ↗
+                </a>
+              )}
+              {candidate?.resumeText && (
+                <span className="pill bg-(--accent)/15 text-(--accent) text-[11px] border border-(--accent)/30">
+                  Parsed
+                </span>
+              )}
+            </div>
           </div>
-          <div className="rounded-2xl border border-white/10 bg-white/3 p-4 max-h-[600px] overflow-auto">
-            {loading ? (
+
+          {loading ? (
+            <div className="rounded-2xl border border-white/10 bg-white/3 p-6 text-center">
               <p className="text-xs text-gray-400">Loading resume...</p>
-            ) : candidate?.resumeText ? (
-              <pre className="whitespace-pre-wrap text-xs text-gray-200 leading-relaxed font-mono">
-                {candidate.resumeText}
-              </pre>
-            ) : (
-              <div className="text-center py-8">
-                <p className="text-xs text-gray-400 mb-2">No resume text available yet.</p>
-                <p className="text-xs text-gray-500">Upload a resume to see the parsed content here.</p>
+            </div>
+          ) : candidate?.resumeText ? (
+            <ResumeDocument text={candidate.resumeText} />
+          ) : (
+            <div className="rounded-2xl border border-white/10 bg-white/3 p-8 text-center">
+              <div className="w-10 h-10 rounded-2xl border border-white/10 bg-white/5 flex items-center justify-center mx-auto mb-3">
+                <span className="text-sm">📄</span>
               </div>
-            )}
-          </div>
-          <p className="text-xs text-gray-400">
-            This preview is based on parsed text. In production you can render PDF pages or a stored file viewer.
-          </p>
+              <p className="text-sm text-gray-400 mb-1">No resume uploaded yet</p>
+              <p className="text-xs text-gray-500">Upload a resume to see the structured view here.</p>
+            </div>
+          )}
         </aside>
       </div>
     </div>

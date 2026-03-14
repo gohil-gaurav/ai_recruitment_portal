@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { setUser } from "@/lib/auth";
 import { motion } from "framer-motion";
 import { 
   Mail, 
@@ -50,6 +51,7 @@ export default function LoginPage() {
   };
 
   const handleRoleSelection = (role) => {
+    setUser({ email, role, name: email.split("@")[0] });
     const redirectTo = role === "HR" ? "/dashboard" : "/candidate-dashboard";
     router.push(redirectTo);
   };
@@ -61,10 +63,9 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 800));
-      setAuthenticated(true);
-      setTimeout(() => {
-        handleRoleSelection(role);
-      }, 100);
+      setUser({ email: demoEmail, role, name: demoEmail.split("@")[0] });
+      const redirectTo = role === "HR" ? "/dashboard" : "/candidate-dashboard";
+      router.push(redirectTo);
     } catch (e) {
       setError("Demo login failed. Please try again.");
     } finally {
@@ -73,7 +74,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#0b0b0f] via-[#0f0f12] to-black text-white">
+    <div className="relative min-h-screen overflow-hidden bg-linear-to-b from-[#0b0b0f] via-[#0f0f12] to-black text-white">
       <motion.div 
         className="magic-grid animated-grid" 
         aria-hidden
@@ -93,7 +94,7 @@ export default function LoginPage() {
           transition={{ duration: 0.5 }}
         >
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-11 h-11 rounded-xl neon-border flex items-center justify-center font-black text-lg bg-gradient-to-br from-[var(--accent)]/10 to-transparent group-hover:scale-105 transition">
+            <div className="w-11 h-11 rounded-xl neon-border flex items-center justify-center font-black text-lg bg-linear-to-br from-(--accent)/10 to-transparent group-hover:scale-105 transition">
               V
             </div>
             <div>
@@ -103,7 +104,7 @@ export default function LoginPage() {
           </Link>
           <Link
             href="/signup"
-            className="pill bg-white/10 border border-white/15 text-white hover:border-[var(--accent)] animated-button text-sm"
+            className="pill bg-white/10 border border-white/15 text-white hover:border-(--accent) animated-button text-sm"
           >
             Create account
           </Link>
@@ -118,9 +119,9 @@ export default function LoginPage() {
             variants={fadeIn}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--accent)]/10 border border-[var(--accent)]/30 mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-pulse" />
-              <span className="text-xs text-[var(--accent)] font-semibold uppercase tracking-wider">Secure Login</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-(--accent)/10 border border-(--accent)/30 mb-6">
+              <span className="w-1.5 h-1.5 rounded-full bg-(--accent) animate-pulse" />
+              <span className="text-xs text-(--accent) font-semibold uppercase tracking-wider">Secure Login</span>
             </div>
 
             <h1 className="text-4xl md:text-5xl font-black mb-3">
@@ -135,7 +136,7 @@ export default function LoginPage() {
                 {/* Email Input */}
                 <div className="space-y-2">
                   <label className="text-sm font-semibold text-gray-200 flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-[var(--accent)]" />
+                    <Mail className="w-4 h-4 text-(--accent)" />
                     Email Address
                   </label>
                   <div className="relative">
@@ -144,7 +145,7 @@ export default function LoginPage() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="name@company.com"
-                      className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3.5 text-sm focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/20 transition-all"
+                      className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3.5 text-sm focus:border-(--accent) focus:outline-none focus:ring-2 focus:ring-(--accent)/20 transition-all"
                       disabled={loading}
                     />
                   </div>
@@ -153,7 +154,7 @@ export default function LoginPage() {
                 {/* Password Input */}
                 <div className="space-y-2">
                   <label className="text-sm font-semibold text-gray-200 flex items-center gap-2">
-                    <Lock className="w-4 h-4 text-[var(--accent)]" />
+                    <Lock className="w-4 h-4 text-(--accent)" />
                     Password
                   </label>
                   <div className="relative">
@@ -162,7 +163,7 @@ export default function LoginPage() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••••"
-                      className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3.5 text-sm focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/20 transition-all"
+                      className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3.5 text-sm focus:border-(--accent) focus:outline-none focus:ring-2 focus:ring-(--accent)/20 transition-all"
                       disabled={loading}
                     />
                   </div>
@@ -182,7 +183,7 @@ export default function LoginPage() {
                 <div className="flex flex-col sm:flex-row gap-4">
                   <button
                     disabled={loading}
-                    className="flex-1 rounded-full bg-[var(--accent)] text-black font-bold text-base px-8 py-4 disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2 hover:scale-105 transition-transform shadow-lg hover:shadow-[0_0_30px_rgba(198,243,107,0.3)]"
+                    className="flex-1 rounded-full bg-(--accent) text-black font-bold text-base px-8 py-4 disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2 hover:scale-105 transition-transform shadow-lg hover:shadow-[0_0_30px_rgba(198,243,107,0.3)]"
                     type="submit"
                   >
                     {loading ? (
@@ -215,20 +216,20 @@ export default function LoginPage() {
                       type="button"
                       onClick={() => handleDemoLogin("hr@demo.com", "demo123", "HR")}
                       disabled={loading}
-                      className="group rounded-xl border border-[var(--accent)]/30 bg-gradient-to-br from-[var(--accent)]/10 to-transparent p-4 hover:from-[var(--accent)]/20 hover:border-[var(--accent)]/50 transition-all disabled:opacity-60 text-left"
+                      className="group rounded-xl border border-(--accent)/30 bg-linear-to-br from-(--accent)/10 to-transparent p-4 hover:from-(--accent)/20 hover:border-(--accent)/50 transition-all disabled:opacity-60 text-left"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
                       <div className="flex items-center gap-3 mb-2">
-                        <div className="w-10 h-10 rounded-lg bg-[var(--accent)]/20 flex items-center justify-center group-hover:bg-[var(--accent)]/30 transition">
-                          <Briefcase className="w-5 h-5 text-[var(--accent)]" />
+                        <div className="w-10 h-10 rounded-lg bg-(--accent)/20 flex items-center justify-center group-hover:bg-(--accent)/30 transition">
+                          <Briefcase className="w-5 h-5 text-(--accent)" />
                         </div>
                         <div>
                           <p className="font-bold text-white text-sm">HR Dashboard</p>
                           <p className="text-xs text-gray-400">Recruiter access</p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2 text-xs text-[var(--accent)]">
+                      <div className="flex items-center gap-2 text-xs text-(--accent)">
                         <Zap className="w-3 h-3" />
                         <span>Quick Login</span>
                       </div>
@@ -238,20 +239,20 @@ export default function LoginPage() {
                       type="button"
                       onClick={() => handleDemoLogin("candidate@demo.com", "demo123", "CANDIDATE")}
                       disabled={loading}
-                      className="group rounded-xl border border-[var(--accent)]/30 bg-gradient-to-br from-[var(--accent)]/10 to-transparent p-4 hover:from-[var(--accent)]/20 hover:border-[var(--accent)]/50 transition-all disabled:opacity-60 text-left"
+                      className="group rounded-xl border border-(--accent)/30 bg-linear-to-br from-(--accent)/10 to-transparent p-4 hover:from-(--accent)/20 hover:border-(--accent)/50 transition-all disabled:opacity-60 text-left"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
                       <div className="flex items-center gap-3 mb-2">
-                        <div className="w-10 h-10 rounded-lg bg-[var(--accent)]/20 flex items-center justify-center group-hover:bg-[var(--accent)]/30 transition">
-                          <User className="w-5 h-5 text-[var(--accent)]" />
+                        <div className="w-10 h-10 rounded-lg bg-(--accent)/20 flex items-center justify-center group-hover:bg-(--accent)/30 transition">
+                          <User className="w-5 h-5 text-(--accent)" />
                         </div>
                         <div>
                           <p className="font-bold text-white text-sm">Candidate Portal</p>
                           <p className="text-xs text-gray-400">Job seeker access</p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2 text-xs text-[var(--accent)]">
+                      <div className="flex items-center gap-2 text-xs text-(--accent)">
                         <Zap className="w-3 h-3" />
                         <span>Quick Login</span>
                       </div>
@@ -267,9 +268,9 @@ export default function LoginPage() {
                 transition={{ duration: 0.3 }}
               >
                 {/* Success Message */}
-                <div className="rounded-2xl border border-[var(--accent)]/30 bg-gradient-to-br from-[var(--accent)]/10 to-transparent p-6">
+                <div className="rounded-2xl border border-(--accent)/30 bg-linear-to-br from-(--accent)/10 to-transparent p-6">
                   <div className="flex items-center gap-3 mb-2">
-                    <CheckCircle2 className="w-6 h-6 text-[var(--accent)]" />
+                    <CheckCircle2 className="w-6 h-6 text-(--accent)" />
                     <p className="text-lg font-bold text-white">Authentication Successful</p>
                   </div>
                   <p className="text-sm text-gray-300">Logged in as: <span className="font-semibold text-white">{email}</span></p>
@@ -281,20 +282,20 @@ export default function LoginPage() {
                   <div className="grid gap-4">
                     <motion.button
                       onClick={() => handleRoleSelection("HR")}
-                      className="group rounded-2xl border-2 border-white/20 bg-gradient-to-br from-white/5 to-transparent p-6 hover:border-[var(--accent)] hover:from-[var(--accent)]/10 transition-all text-left"
+                      className="group rounded-2xl border-2 border-white/20 bg-linear-to-br from-white/5 to-transparent p-6 hover:border-(--accent) hover:from-(--accent)/10 transition-all text-left"
                       whileHover={{ scale: 1.02, y: -2 }}
                       whileTap={{ scale: 0.98 }}
                     >
                       <div className="flex items-start gap-4">
-                        <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[var(--accent)]/20 to-[var(--accent)]/5 border border-[var(--accent)]/30 flex items-center justify-center group-hover:scale-110 transition-transform">
-                          <Briefcase className="w-7 h-7 text-[var(--accent)]" />
+                        <div className="w-14 h-14 rounded-xl bg-linear-to-br from-(--accent)/20 to-(--accent)/5 border border-(--accent)/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                          <Briefcase className="w-7 h-7 text-(--accent)" />
                         </div>
                         <div className="flex-1">
                           <p className="text-xl font-bold text-white mb-1">HR / Recruiter Dashboard</p>
                           <p className="text-sm text-gray-400 leading-relaxed">
                             Access candidate database, upload resumes, AI search assistant, and manage hiring pipeline
                           </p>
-                          <div className="flex items-center gap-2 mt-3 text-[var(--accent)] text-sm font-semibold">
+                          <div className="flex items-center gap-2 mt-3 text-(--accent) text-sm font-semibold">
                             <span>Continue to Dashboard</span>
                             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                           </div>
@@ -304,20 +305,20 @@ export default function LoginPage() {
 
                     <motion.button
                       onClick={() => handleRoleSelection("CANDIDATE")}
-                      className="group rounded-2xl border-2 border-white/20 bg-gradient-to-br from-white/5 to-transparent p-6 hover:border-[var(--accent)] hover:from-[var(--accent)]/10 transition-all text-left"
+                      className="group rounded-2xl border-2 border-white/20 bg-linear-to-br from-white/5 to-transparent p-6 hover:border-(--accent) hover:from-(--accent)/10 transition-all text-left"
                       whileHover={{ scale: 1.02, y: -2 }}
                       whileTap={{ scale: 0.98 }}
                     >
                       <div className="flex items-start gap-4">
-                        <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[var(--accent)]/20 to-[var(--accent)]/5 border border-[var(--accent)]/30 flex items-center justify-center group-hover:scale-110 transition-transform">
-                          <User className="w-7 h-7 text-[var(--accent)]" />
+                        <div className="w-14 h-14 rounded-xl bg-linear-to-br from-(--accent)/20 to-(--accent)/5 border border-(--accent)/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                          <User className="w-7 h-7 text-(--accent)" />
                         </div>
                         <div className="flex-1">
                           <p className="text-xl font-bold text-white mb-1">Candidate Portal</p>
                           <p className="text-sm text-gray-400 leading-relaxed">
                             View your applications, manage resume, track interview status, and update profile
                           </p>
-                          <div className="flex items-center gap-2 mt-3 text-[var(--accent)] text-sm font-semibold">
+                          <div className="flex items-center gap-2 mt-3 text-(--accent) text-sm font-semibold">
                             <span>Continue to Portal</span>
                             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                           </div>
@@ -351,7 +352,7 @@ export default function LoginPage() {
             transition={{ duration: 0.6, delay: 0.4 }}
           >
             <div className="flex items-center gap-2 mb-6">
-              <Sparkles className="w-5 h-5 text-[var(--accent)]" />
+              <Sparkles className="w-5 h-5 text-(--accent)" />
               <p className="mono-label">Platform Benefits</p>
             </div>
 
@@ -377,13 +378,13 @@ export default function LoginPage() {
               ].map((item, idx) => (
                 <motion.li 
                   key={idx}
-                  className="flex items-start gap-3 p-4 rounded-xl bg-white/5 border border-white/10 hover:border-[var(--accent)]/30 transition-colors"
+                  className="flex items-start gap-3 p-4 rounded-xl bg-white/5 border border-white/10 hover:border-(--accent)/30 transition-colors"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.4, delay: 0.6 + idx * 0.1 }}
                 >
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[var(--accent)]/20 to-[var(--accent)]/5 border border-[var(--accent)]/30 flex items-center justify-center flex-shrink-0">
-                    <item.icon className="w-5 h-5 text-[var(--accent)]" />
+                  <div className="w-10 h-10 rounded-lg bg-linear-to-br from-(--accent)/20 to-(--accent)/5 border border-(--accent)/30 flex items-center justify-center shrink-0">
+                    <item.icon className="w-5 h-5 text-(--accent)" />
                   </div>
                   <div>
                     <p className="font-semibold text-white mb-1">{item.title}</p>
@@ -395,7 +396,7 @@ export default function LoginPage() {
 
             <div className="divider-line my-6" />
 
-            <div className="rounded-xl bg-gradient-to-br from-[var(--accent)]/10 to-transparent border border-[var(--accent)]/30 p-4">
+            <div className="rounded-xl bg-linear-to-br from-(--accent)/10 to-transparent border border-(--accent)/30 p-4">
               <p className="text-xs text-gray-400 leading-relaxed">
                 Enterprise-grade security with SOC2 compliance, encrypted data storage, and role-based access control
               </p>
@@ -411,8 +412,8 @@ export default function LoginPage() {
           transition={{ duration: 0.6, delay: 0.8 }}
         >
           <p className="text-sm text-gray-500">
-            Don't have an account?{" "}
-            <Link href="/signup" className="text-[var(--accent)] hover:underline font-semibold">
+            Don&apos;t have an account?{" "}
+            <Link href="/signup" className="text-(--accent) hover:underline font-semibold">
               Sign up for free
             </Link>
           </p>
