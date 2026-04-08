@@ -27,6 +27,14 @@ export async function GET(req) {
 
         return NextResponse.json(candidates, { status: 200 });
     } catch (error) {
+        const isDbUnavailable = error?.name === "PrismaClientInitializationError";
+        if (isDbUnavailable) {
+            return NextResponse.json(
+                { candidates: [], warning: "Database unavailable. Check DATABASE_URL connectivity." },
+                { status: 200 }
+            );
+        }
+
         console.error("Fetch Candidates Error:", error);
         return NextResponse.json({ error: "Failed to fetch candidates" }, { status: 500 });
     }

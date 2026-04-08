@@ -1,0 +1,30 @@
+python
+java
+javascript
+typescript
+sql
+mysql
+postgresql
+mongodb
+fastapi
+flask
+django
+react
+node.js
+express
+html
+css
+tailwind
+aws
+docker
+kubernetes
+git
+machine learning
+deep learning
+data analysis
+pandas
+numpy
+scikit-learn
+tensorflow
+pytorch
+api

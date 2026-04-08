@@ -54,6 +54,9 @@ export default function RecruiterDashboard() {
       if (!res.ok) {
         throw new Error(data?.error || "Failed to fetch candidates");
       }
+      if (data?.warning) {
+        setError(data.warning);
+      }
       setCandidates(Array.isArray(data) ? data : data.candidates || []);
     } catch (err) {
       console.error("Fetch failed", err);
